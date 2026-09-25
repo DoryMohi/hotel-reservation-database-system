@@ -1,0 +1,128 @@
+-- SQL DDL for Hotel Reservation System
+
+CREATE TABLE Guest (
+    GuestID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    Street NVARCHAR(100) NOT NULL,
+    City NVARCHAR(100) NOT NULL,
+    PostalCode NVARCHAR(20) NOT NULL,
+    Email NVARCHAR(100)
+);
+GO
+
+CREATE TABLE PhoneNumber (
+    PhoneID INT IDENTITY(1,1) PRIMARY KEY,
+    PhoneNumber NVARCHAR(20) NOT NULL,
+    GuestID INT NOT NULL,
+    FOREIGN KEY (GuestID) REFERENCES Guest(GuestID)
+);
+GO
+
+CREATE TABLE RoomType (
+    RoomTypeID INT IDENTITY(1,1) PRIMARY KEY,
+    TypeName NVARCHAR(50) NOT NULL,
+    DefaultPrice DECIMAL(10,2) NOT NULL
+);
+GO
+
+CREATE TABLE Room (
+    RoomID INT IDENTITY(1,1) PRIMARY KEY,
+    RoomNumber NVARCHAR(10) NOT NULL,
+    Floor INT NOT NULL,
+    RoomTypeID INT NOT NULL,
+    FOREIGN KEY (RoomTypeID) REFERENCES RoomType(RoomTypeID)
+);
+GO
+
+CREATE TABLE Booking (
+    BookingID INT IDENTITY(1,1) PRIMARY KEY,
+    CheckInDate DATE NOT NULL,
+    CheckOutDate DATE NOT NULL,
+    BookingStatus NVARCHAR(50) NOT NULL,
+    GuestID INT NOT NULL,
+    RoomID INT NOT NULL,
+    FOREIGN KEY (GuestID) REFERENCES Guest(GuestID),
+    FOREIGN KEY (RoomID) REFERENCES Room(RoomID)
+);
+GO
+
+CREATE TABLE Payment (
+    PaymentID INT IDENTITY(1,1) PRIMARY KEY,
+    Amount DECIMAL(10,2) NOT NULL,
+    PaymentDate DATE NOT NULL,
+    BookingID INT NOT NULL,
+    FOREIGN KEY (BookingID) REFERENCES Booking(BookingID)
+);
+GO
+
+CREATE TABLE Invoice (
+    InvoiceID INT IDENTITY(1,1) PRIMARY KEY,
+    CreatedDate DATE NOT NULL,
+    TotalAmount DECIMAL(10,2) NOT NULL,
+    BookingID INT NOT NULL UNIQUE,
+    FOREIGN KEY (BookingID) REFERENCES Booking(BookingID)
+);
+GO
+
+CREATE TABLE Feedback (
+    FeedbackID INT IDENTITY(1,1) PRIMARY KEY,
+    Rating INT CHECK (Rating BETWEEN 1 AND 5),
+    BookingID INT NOT NULL UNIQUE,
+    FOREIGN KEY (BookingID) REFERENCES Booking(BookingID)
+);
+GO
+
+CREATE TABLE Service (
+    ServiceID INT IDENTITY(1,1) PRIMARY KEY,
+    ServiceName NVARCHAR(100) NOT NULL,
+    ServicePrice DECIMAL(10,2) NOT NULL
+);
+GO
+
+CREATE TABLE Staff (
+    StaffID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    Shift NVARCHAR(50) NOT NULL
+);
+GO
+
+CREATE TABLE Receptionist (
+    StaffID INT PRIMARY KEY,
+    FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
+);
+GO
+
+CREATE TABLE Housekeeper (
+    StaffID INT PRIMARY KEY,
+    FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
+);
+GO
+
+CREATE TABLE Manager (
+    StaffID INT PRIMARY KEY,
+    FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
+);
+GO
+
+CREATE TABLE ServiceUsage (
+    ServiceUsageID INT IDENTITY(1,1) PRIMARY KEY,
+    UsageDate DATE NOT NULL,
+    BookingID INT NOT NULL,
+    ServiceID INT NOT NULL,
+    StaffID INT NOT NULL,
+    FOREIGN KEY (BookingID) REFERENCES Booking(BookingID),
+    FOREIGN KEY (ServiceID) REFERENCES Service(ServiceID),
+    FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
+);
+GO
+
+CREATE TABLE MaintenanceRequest (
+    RequestID INT IDENTITY(1,1) PRIMARY KEY,
+    IssueDescription NVARCHAR(200) NOT NULL,
+    RequestDate DATE NOT NULL,
+    RoomID INT NOT NULL,
+    StaffID INT NOT NULL,
+    FOREIGN KEY (RoomID) REFERENCES Room(RoomID),
+    FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
+);
+GO
