@@ -1,0 +1,45 @@
+----------------Question 1 --------------------
+SELECT ProductName as 'Product name', UnitPrice as 'Price of product'
+FROM Products
+WHERE UnitPrice > 20
+ORDER BY ProductName;
+
+
+----------------Question 2 --------------------
+select CompanyName 'Company Name',
+		ContactName 'Contact Name',
+		Country 'Country'
+from Customers 
+where (CompanyName like 'A%' or CompanyName like 'B%') and len(CompanyName)>15
+order by len(CompanyName) desc;
+
+
+----------------Question 3 --------------------
+select distinct c.CompanyName as 'Customers company name', 
+	    e.LastName as 'Employees last name',
+		e.FirstName as 'Employees first name',
+		o.OrderDate as 'Order date'
+from Customers c, Employees e, Orders o
+where o.OrderDate between '1997-01-01' and '1997-03-31' 
+order by 'Employees last name', 'Order date';
+
+
+----------------Question 4 --------------------
+
+select distinct c.CategoryName as 'Category Name',
+		c.CategoryID as 'Category ID from c table',
+		p.CategoryID as 'Category ID from p table',
+		(
+		select count(*)
+		from 
+		)
+from Categories c JOIN Products p ON c.CategoryID=p.CategoryID
+
+----------------Question 5 --------------------
+select p.ProductName 'Product Name',
+		p.CategoryID 'Category ID',
+		d.Quantity 'Quantiy of ordering'
+from Products p join [Order Details] d on p.ProductID=d.ProductID
+where p.CategoryID = 1 and p.ProductName <> 'Chai'
+
+
